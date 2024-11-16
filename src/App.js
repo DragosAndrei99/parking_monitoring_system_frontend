@@ -1,24 +1,16 @@
-import logo from './logo.svg';
-import './App.css';
+import DashboardLayout from "./components/dashboard-layout";
+import Overview from "./components/overview";
+import AreaInfo from "./components/area-info";
+import RevenueAnalytics from "./components/revenue-analytics";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <DashboardLayout>
+      <h1 className="text-2xl font-bold mb-4">Parking Areas - Area Details</h1>
+      <Overview />
+      <AreaInfo />
+      <RevenueAnalytics />
+    </DashboardLayout>
   );
 }
 
