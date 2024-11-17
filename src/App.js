@@ -1,16 +1,18 @@
 import DashboardLayout from "./components/dashboard-layout";
-import Overview from "./components/overview";
-import AreaInfo from "./components/area-info";
-import RevenueAnalytics from "./components/revenue-analytics";
+import ParkingInfo from "./components/parking-info";
+import LogsInfo from "./components/logs-info";
+import { BrowserRouter as Router,Route, Routes } from "react-router-dom";
 
 function App() {
   return (
-    <DashboardLayout>
-      <h1 className="text-2xl font-bold mb-4">Parking Areas - Area Details</h1>
-      <Overview />
-      <AreaInfo />
-      <RevenueAnalytics />
-    </DashboardLayout>
+    <Router>
+      <Routes>
+        <Route path="/" element={<DashboardLayout />} >
+          <Route path="/" element={<ParkingInfo />} />
+          <Route path="/logs" element={<LogsInfo />} />
+        </Route>
+      </Routes>
+    </Router>
   );
 }
 

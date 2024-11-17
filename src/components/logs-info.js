@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const AreaInfo = () => {
+const LogsInfo = () => {
 
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true); 
@@ -43,7 +43,7 @@ const AreaInfo = () => {
   return (
     <div className="bg-white p-4 rounded shadow mb-6">
  <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Parking Live Status</h2>
+      <h2 className="text-2xl font-bold mb-4">Parking Logs Status</h2>
       <div className="overflow-x-auto">
         <table className="min-w-full border-collapse border border-gray-200">
           <thead className="bg-gray-100">
@@ -95,4 +95,4 @@ const AreaInfo = () => {
   );
 };
 
-export default AreaInfo;
+export default LogsInfo;
