@@ -1,44 +1,6 @@
-import { useState, useEffect } from "react";
 
-const ParkingInfo = () => {
-
-  const [data, setData] = useState({});
-  const [loading, setLoading] = useState(true); 
-  const [error, setError] = useState(null); 
-  
-  if(!loading && !error) console.log(data.parkingSpotsState);
-  
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-
-        const response = await fetch('http://192.168.101.131:80/park');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-
-        const formattedData = await response.json(); 
-        
-        setData(formattedData);
-        
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false); 
-      }
-    };
-
-    fetchData();
-    const interval = setInterval(() => fetchData(), 10000)
-    return () => {
-      clearInterval(interval);
-    }
-
-  }, [setData]);
-  
-  // if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+const ParkingInfo = ({parkingData}) => {
+  console.log(`data from parkingInfo${parkingData}`);
   
   return (
     <div className="bg-white p-4 rounded shadow mb-6">
@@ -60,8 +22,8 @@ const ParkingInfo = () => {
             </tr>
           </thead>
           <tbody>
-            {data?.parkingSpotsState?.length > 0 ? (
-              data.parkingSpotsState.map((row, index) => (
+            {parkingData?.length > 0 ? (
+              parkingData.map((row, index) => (
                 <tr
                   key={index}
                   className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
@@ -70,7 +32,7 @@ const ParkingInfo = () => {
                     {index}
                   </td>
                   <td className="border border-gray-300 px-4 py-2 text-sm text-gray-700">
-                    {row[0]}
+                    {row[0] === '0' ? "Free" : "Busy"}
                   </td>
                   <td className="border border-gray-300 px-4 py-2 text-sm text-gray-700">
                     {row[1]}
