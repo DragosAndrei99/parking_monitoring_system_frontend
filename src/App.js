@@ -50,13 +50,14 @@ const App = () => {
           console.log('Fetch aborted');
         } else {
           setError(error.message);
-        }      } finally {
+        }      
+      } finally {
         setLoading(false); 
       }
     };
 
     fetchData();
-    const interval = setInterval(() => fetchData(), 10000)
+    const interval = setInterval(() => fetchData(), 5000)
     return () => {
       clearInterval(interval);
       controller.abort();
