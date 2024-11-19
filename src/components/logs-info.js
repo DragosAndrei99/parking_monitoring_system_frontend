@@ -5,9 +5,9 @@ const LogsInfo = ({ parkingData, loading }) => {
   const [suspendedParkingData] = useSuspender(parkingData, loading)
 
   return (
-    <div className="flex justify-between bg-white p-4 rounded shadow mb-6">
+    <div className="flex justify-between bg-gray-200 p-6 rounded-lg shadow-lg">
       {suspendedParkingData && suspendedParkingData.map((table, index) =>
-        <ParkLog key={index} parkingSpotLog={table} parkNo={`${index+1}`}/>
+        <ParkLog key={index} parkingSpotLog={table} parkNo={`${index}`}/>
       )}
 
     </div>
