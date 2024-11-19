@@ -4,7 +4,19 @@ import LogsInfo from "./components/logs-info";
 import { BrowserRouter as Router,Route, Routes } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-function App() {
+const MAX_PARK_SPOT_LOGS = 10;
+
+const parkSpotUpdater = (prevParkSpotData, currParkSpotData) => {
+  if(!prevParkSpotData.find((element) => Object.keys(element).toString() === currParkSpotData[1].toString())) {
+    if(prevParkSpotData.length >= MAX_PARK_SPOT_LOGS) {
+      prevParkSpotData.shift();
+    }
+    return [...prevParkSpotData, {[`${currParkSpotData[1]}`]: currParkSpotData[0]}]
+  }
+  return [...prevParkSpotData];
+}
+
+const App = () => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null); 
@@ -13,15 +25,15 @@ function App() {
   const [parkSpot2, setParkSpot2] = useState([]);
   const [parkSpot3, setParkSpot3] = useState([]);
 
-
-  if(!loading && !error) console.log(parkSpot1);
-  
   useEffect(() => {
+    const controller = new AbortController(); 
+    const signal = controller.signal;
+
     const fetchData = async () => {
       try {
         setLoading(true);
 
-        const response = await fetch('http://192.168.101.131:80/park');
+        const response = await fetch('http://192.168.101.131:80/park', { signal });
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -29,20 +41,16 @@ function App() {
         const formattedData = await response.json(); 
         
         setData(formattedData);
-        setParkSpot1((p) => {
-          if(!p.find((element) => Object.keys(element).toString() === formattedData.parkingSpotsState[0][1].toString())) {
-
-            return [...p, {[`${formattedData.parkingSpotsState[0][1]}`]: formattedData.parkingSpotsState[0][0]}]
-          }
-          return [...p];
-
-        });
-        setParkSpot2((p) => [...p, {[`${formattedData.parkingSpotsState[1][1]}`]: formattedData.parkingSpotsState[1][0]}]);
-        setParkSpot3((p) => [...p, {[`${formattedData.parkingSpotsState[2][1]}`]: formattedData.parkingSpotsState[2][0]}]);
+        setParkSpot1(p => parkSpotUpdater(p, formattedData.parkingSpotsState[0]));
+        setParkSpot2(p => parkSpotUpdater(p, formattedData.parkingSpotsState[1]));
+        setParkSpot3(p => parkSpotUpdater(p, formattedData.parkingSpotsState[2]));
 
       } catch (error) {
-        setError(error.message);
-      } finally {
+        if (error.name === 'AbortError') {
+          console.log('Fetch aborted');
+        } else {
+          setError(error.message);
+        }      } finally {
         setLoading(false); 
       }
     };
@@ -51,17 +59,22 @@ function App() {
     const interval = setInterval(() => fetchData(), 10000)
     return () => {
       clearInterval(interval);
+      controller.abort();
+
     }
 
-  }, [setData, setParkSpot1]);
+  }, [setData, setParkSpot1, setParkSpot2, setParkSpot3]);
 
   if (error) return <div>Error: {error}</div>;
 
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<DashboardLayout />} >
-          <Route path="/" element={<ParkingInfo parkingData={data.parkingSpotsState}/>} />
+        <Route path="/" element={<DashboardLayout 
+          totalParkedFromLogs={[parkSpot1, parkSpot2, parkSpot3].map(spot => spot.filter(entry => Object.values(entry).toString() !== "0")).flat().length}
+          currentlyParkedCars={data?.parkingSpotsState?.filter(spot => spot[0].toString() === '1').length || '0'}
+          />} >
+          <Route path="/" element={<ParkingInfo parkingData={data.parkingSpotsState} loading={loading}/>} />
           <Route path="/logs" element={<LogsInfo parkingData={[parkSpot1, parkSpot2, parkSpot3]} loading={loading}/>} />
         </Route>
       </Routes>

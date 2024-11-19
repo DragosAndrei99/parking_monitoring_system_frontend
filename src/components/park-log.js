@@ -1,9 +1,11 @@
+import formatData from "../utils/data-formatter";
+
 
 const ParkLog = ({parkingSpotLog, parkNo}) => {
 
   return(
     <div className="p-4">
-    <h2 className="text-2xl font-bold mb-4">Parking Spot#{parkNo} Logs Status</h2>
+    <h2 className="text-2xl font-bold mb-4">Parking Spot#{parkNo}</h2>
     <div className="overflow-x-auto">
       <table className="min-w-full border-collapse border border-gray-200">
         <thead className="bg-gray-100">
@@ -21,10 +23,10 @@ const ParkLog = ({parkingSpotLog, parkNo}) => {
             parkingSpotLog?.map((row, index) => (
               <tr key={Object.keys(row).toString()}>
                 <td className="border border-gray-300 px-4 py-2 text-sm text-gray-700">
-                  {Object.values(row)}
+                  {Object.values(row).toString() === '0' ? "Free" : "Busy"}
                 </td>
                 <td className="border border-gray-300 px-4 py-2 text-sm text-gray-700">
-                  {Object.keys(row)}
+                  {formatData(Object.keys(row).toString())}
                 </td>
               </tr>
             ))

@@ -1,17 +1,15 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "./sidebar";
 import Overview from "./overview";
-import RevenueAnalytics from "./revenue-analytics";
 
-const DashboardLayout = () => {
+const DashboardLayout = ({totalParkedFromLogs, currentlyParkedCars }) => {
   return (
     <>
       <div className="flex">
         <Sidebar />
         <main className="flex-1 bg-gray-100 p-6">
-          <Overview/>
+          <Overview totalParkedFromLogs={totalParkedFromLogs} currentlyParkedCars={currentlyParkedCars}/>
           <Outlet/>
-          <RevenueAnalytics/>
         </main>
       </div>
     </>
